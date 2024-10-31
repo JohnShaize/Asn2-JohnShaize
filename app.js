@@ -17,7 +17,7 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 5500;  // Retain for local development
+const PORT = process.env.PORT || 5500;  
 
 
 const hbs = exphbs.create({
@@ -46,11 +46,11 @@ const hbs = exphbs.create({
 
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
-
+app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.set('views', path.join(__dirname, 'views'));
 let movieData;
 fs.readFile('movie-dataset-a2.json', 'utf8', (err, data) => {
     if (err) {
@@ -170,6 +170,14 @@ app.get('/highlightedData', (req, res) => {
   });
 });
 
+//using template engine, display those data (movies with "Rated" as PG-13)
+app.get('/pg13', (req, res) => {
+    const pg13Movies = movieData.filter(movie => movie.Rated === 'PG-13');
+    res.render('pg13', {
+        title: 'PG-13 Movies',
+        movies: pg13Movies
+    });
+  });  
 
 // Handle 404 for wrong routes
 app.use((req, res) => {
