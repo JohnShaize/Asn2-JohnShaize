@@ -17,7 +17,8 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 
 const app = express();
-const PORT = 5500;
+const PORT = process.env.PORT || 5500;  // Retain for local development
+
 
 const hbs = exphbs.create({
     extname: '.hbs',
